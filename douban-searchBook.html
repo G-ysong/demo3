@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>豆瓣搜索书籍</title>
+    <style>
+        li{
+            list-style: none;
+        }
+        a{
+            text-decoration: none;
+        }
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #list{
+            width:320px;
+            margin: 0;
+            padding: 0;
+            border:1px solid #fab;
+            list-style: none;
+            display: none;
+        }
+        #list li a{
+            display: block;
+            line-height: 30px;
+            padding: 5px;
+            text-decoration: none;
+        }
+        .clear:after{
+            clear:both;
+            height:0;
+            content:'';
+            display:block;
+            visibility:hidden;
+        }
+        .clear{zoom:1;}
+        #content{
+            width: 1320px;
+            margin: 0 auto;
+            box-sizing: border-box;
+            padding-left: 20px;
+        }
+        #list li a:hover{
+            background:#fd0;
+            color:#fff;
+        }
+        #text{
+            width:300px;
+            height:30px;
+            padding: 10px;
+            border:1px solid #fab;
+            font-size: 22px;
+        }
+        #btn{
+            line-height:30px;
+            width: 100px;
+            padding: 10px;
+            border:1px solid #fab;
+            text-decoration: none;
+            display: inline-block;
+            vertical-align: top;
+            background: #ccc;
+            cursor: pointer;
+            text-align: center;
+        }
+        #books li{
+            margin-top:30px;
+            background: #ccc;
+            margin-right: 38px;
+            height: 400px;
+            padding: 10px;
+            border:1px solid #fa0;
+            float: left;
+        }
+        #books li img{
+            width: 200px;
+            height: 272px;
+        }
+        #books li p{
+            margin-top: 20px;
+            width: 200px;
+            line-height: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+    <script>
+        function douban(data){
+            var oUl = document.getElementById("list");
+            var oBtn = document.getElementById("btn");
+            var oBooks = document.getElementById("books");
+            var oText = document.getElementById("text");
+            var html = "";
+
+            oBtn.onclick = function(){
+                oBooks.innerHTML = "";
+                oUl.style.display = "none"
+                var str = "";
+                for(var i=0;i<data.books.length;i++){
+                    str += "<li><a target='_blank' href='https://book.douban.com/subject/"+ data.books[i].id+"'> <img src='"+data.books[i].image+"'><p>"+data.books[i].title+"</p></a></li>";
+                }
+                oBooks.innerHTML += str;
+            };
+            if(data.books.length){
+                oUl.style.display = "block";
+                var str = "";
+                for(var i=0;i<data.books.length;i++){
+                    html += '<li> <a target="_blank" href="https://book.douban.com/subject/'+ data.books[i].id+'"> '+data.books[i].title+' </a> </li>';
+                }
+                oUl.innerHTML = html;
+            }else{
+                oUl.innerHTML = ""
+            }
+
+        }
+    </script>
+    <script>
+        window.onload = function(){
+            var oText = document.getElementById("text");
+            var oUl = document.getElementById("list");
+            var n = 1
+            oText.onkeyup = function(){
+                if(this.value!==''){
+                    var oScript = document.createElement("script");
+                    oScript.src = "https://api.douban.com/v2/book/search?q="+this.value+"&count=10&callback=douban&start="+n+"&fields=id,title,image,url,alt";
+                    // oScript.src = "https://book.douban.com/j/subject_suggest?q="+this.value
+                    document.body.appendChild(oScript);
+                }else{
+
+                    oUl.style.display = "none";
+                }
+            };
+
+
+        }
+    </script>
+</head>
+<body>
+<div style="margin: 30px auto;width:450px">
+    <input type="text" id="text">
+    <input type="button" href="" id="btn" value="搜索">
+    <ul id="list"></ul>
+</div>
+<div id="content" class="clear" style="">
+    <ul id="books">
+    </ul>
+</div>
+</body>
+</html>
